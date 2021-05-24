@@ -39,27 +39,43 @@
 // bcrypt.compare(loginPasswordString, hash).then(result => console.log(result));
 
 //post request with hashing 
+// const express = require('express')
+// const app = express();
+// app.use(express.json())
+// const bcrypt = require('bcrypt');
+// const saltRounds = 10;
+// const pass = 'ReskillAmericans123';
+// bcrypt.hash(pass, saltRounds).then(hash => console.log(hash));
+
+// app.post('/password', (req, res) => {
+//     const pass = '';
+//     const hash = '$2b$10$o2FiOX6zMAgHx6NLGBY5pe0/cnTKvwr96o52bosF61OBlFcz9B9Y2'
+//     bcrypt.compare(pass, hash).then(result => console.log(result));
+//     if (pass === 'ReskillAmericans123') {
+//         res.status(200).json({ message: 'You are logged in' })
+//     }
+//     else if (!pass) {
+//         res.status(404).json({message: 'Please enter your pass'})
+//     }
+//     else {
+//         res.status(500).json({message: 'Acess denied!'})
+//     } 
+// });
+
+// app.listen(3000, ()=> console.log('Serving port 3000'))
+
+
+//version 2
 const express = require('express')
 const app = express();
 app.use(express.json())
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const pass = 'ReskillAmericans123';
-bcrypt.hash(pass, saltRounds).then(hash => console.log(hash));
+const plainText = 'ReskillAmericans123';
+let hashedPassword = bcrypt.hashSync(plainText, saltRounds);
 
 app.post('/password', (req, res) => {
-    const pass = '';
-    const hash = '$2b$10$o2FiOX6zMAgHx6NLGBY5pe0/cnTKvwr96o52bosF61OBlFcz9B9Y2'
-    bcrypt.compare(pass, hash).then(result => console.log(result));
-    if (pass === 'ReskillAmericans123') {
-        res.status(200).json({ message: 'You are logged in' })
-    }
-    else if (!pass) {
-        res.status(404).json({message: 'Please enter your pass'})
-    }
-    else {
-        res.status(500).json({message: 'Acess denied!'})
-    } 
-});
+    let match = bcrypt.compareSync(req.body.password, hashedPassword);
+})
 
-app.listen(3000, ()=> console.log('Serving port 3000'))
+app.listen(3000, () => console.log('Serving port 3000'))
