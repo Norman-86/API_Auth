@@ -65,7 +65,7 @@
 // app.listen(3000, ()=> console.log('Serving port 3000'))
 
 
-//version 2
+//version 3
 const express = require('express')
 const app = express();
 app.use(express.json())
@@ -74,8 +74,16 @@ const saltRounds = 10;
 const plainText = 'ReskillAmericans123';
 let hashedPassword = bcrypt.hashSync(plainText, saltRounds);
 
-app.post('/password', (req, res) => {
+app.post('/login', (req, res) => {
+    if (!req.body.password) {
+        return res.status(400).json({ message: 'password required'})
+    }
     let match = bcrypt.compareSync(req.body.password, hashedPassword);
-})
+    if (match) {
+        return res.status(200).json({message: 'password correct!'})
+    } else {
+        return res.status(400).json({message: 'invalid password'})
+    }
+    });
 
 app.listen(3000, () => console.log('Serving port 3000'))
